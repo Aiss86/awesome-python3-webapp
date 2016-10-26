@@ -35,6 +35,7 @@ async def select(sql, args, size=None):
     global __pool
     with await __pool as conn:
         cur = await conn.cursor(aiomysql.DictCursor)
+        logging.info('sql:(%s) args:(%s)' % (sql, str(args))) 
         await cur.execute(sql.replace('?', '%s'), args or ())
         if size:
             rs = await cur.fetchmany(size)
@@ -115,7 +116,6 @@ class ModelMetaclass(type):
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)
         tableName = attrs.get('__table__', None) or name
-        logging.info('found model: %s (table: %s)' % (name, tableName))
         mappings = dict()
         fields = []
         primaryKey = None
@@ -137,10 +137,9 @@ class ModelMetaclass(type):
         attrs['__primary_key__'] = primaryKey
         attrs['__fields__'] = fields
         attrs['__select__'] = 'select `%s` %s from `%s`' % (primaryKey, ','.join(escape_fields), tableName)
-        attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escape_fields), primaryKey, create_args_string(len(escape_fields)+1))
+        attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escape_fields), primaryKey, create_args_string(len(escape_fields) + 1))
         attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
         attrs['__delete__'] = 'delete from %s where `%s`=?' % (tableName, primaryKey)
-        print("*****name:",name,attrs );
         return type.__new__(cls, name, bases, attrs)
 
 

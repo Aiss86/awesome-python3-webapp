@@ -22,6 +22,6 @@ async def handle_url_xxx(requeset):
 async def index(request):
     users = await User.findAll()
     return {
-        '__template': 'test.html',
+        '__template__': 'test.html',
         'users': users
     }

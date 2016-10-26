@@ -6,10 +6,11 @@ import asyncio
 import orm
 import time
 import os
+import json
 from coroweb import add_routes, add_static
 from datetime import datetime
 from aiohttp import web
-from jinja2 import Environment, FileSystemLoader 
+from jinja2 import Environment, FileSystemLoader
 
 __author__ = 'Aiss86'
 
@@ -88,13 +89,13 @@ async def response_factory(app, handler):
             return web.Response(r)
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
-            if isinstance(t, int) and t >=100 and t <600:
+            if isinstance(t, int) and t >= 100 and t < 600:
                 return web.Response(t, str(m))
         # default:
         resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
-    return response
+    return respone
 
 
 def datetime_filter(t):
@@ -111,9 +112,11 @@ def datetime_filter(t):
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
 
+'''
 def index(request):
     return web.Response(body=b'<h1>Awesome</h1>',
                              content_type='text/html', charset='utf-8')
+'''
 
 
 async def init(loop):
