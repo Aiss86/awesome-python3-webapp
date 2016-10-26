@@ -140,6 +140,7 @@ class ModelMetaclass(type):
         attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escape_fields), primaryKey, create_args_string(len(escape_fields)+1))
         attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
         attrs['__delete__'] = 'delete from %s where `%s`=?' % (tableName, primaryKey)
+        print("*****name:",name,attrs );
         return type.__new__(cls, name, bases, attrs)
 
 
