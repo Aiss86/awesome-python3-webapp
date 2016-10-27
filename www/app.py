@@ -122,7 +122,7 @@ def index(request):
 async def init(loop):
     await orm.create_pool(loop=loop, host='127.0.0.1', port=3306, user='root', password='123456', db='awesome')
     app = web.Application(loop=loop, middlewares=[logger_factory, response_factory])
-    init_jinja2(app, filter=dict(datetime=datetime_filter))
+    init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     add_static(app)
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
