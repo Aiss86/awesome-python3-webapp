@@ -33,7 +33,7 @@ def post(path):
     Define decorator @post('/path')
     '''
     def decorator(func):
-        @functools.warps(func)
+        @functools.wraps(func)
         def warpper(*args, **kw):
             return func(*args, **kw)
         warpper.__method__ = 'POST'
