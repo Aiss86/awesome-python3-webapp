@@ -20,11 +20,11 @@ def get(path):
     '''
     def decorator(func):
         @functools.wraps(func)
-        def warpper(*args, **kw):
+        def wrapper(*args, **kw):
             return func(*args, **kw)
-        warpper.__method__ = 'GET'
-        warpper.__route__ = path
-        return warpper
+        wrapper.__method__ = 'GET'
+        wrapper.__route__ = path
+        return wrapper
     return decorator
 
 
@@ -34,15 +34,15 @@ def post(path):
     '''
     def decorator(func):
         @functools.wraps(func)
-        def warpper(*args, **kw):
+        def wrapper(*args, **kw):
             return func(*args, **kw)
-        warpper.__method__ = 'POST'
-        warpper.__route__ = path
-        return warpper
+        wrapper.__method__ = 'POST'
+        wrapper.__route__ = path
+        return wrapper
     return decorator
 
 
-def get_requried_kw_args(fn):
+def get_required_kw_args(fn):
     '''
     获取请求的关键字名字
     '''
@@ -118,7 +118,7 @@ class RequestHandler(object):
         self._has_var_kw_arg = has_var_kw_arg(fn)
         self._has_named_kw_args = has_named_kw_args(fn)
         self._named_kw_args = get_named_kw_args(fn)
-        self._required_kw_args = get_requried_kw_args(fn)
+        self._required_kw_args = get_required_kw_args(fn)
 
     async def __call__(self, request):
         kw = None
@@ -138,7 +138,7 @@ class RequestHandler(object):
                 else:
                     return web.HTTPBadRequest('Unspported Content-Type: %s' % request.content_type)
             if request.method == 'GET':
-                qs = request.quere_string
+                qs = request.query_string
                 if qs:
                     kw = dict()
                     for k, v in parse.parse_qs(qs, True).items():
@@ -156,7 +156,7 @@ class RequestHandler(object):
             # check named arg:
             for k, v in request.match_info.items():
                 if k in kw:
-                    logging.warnings('Duplicate arg name in named arg and kw args: %s' % k)
+                    logging.warning('Duplicate arg name in named arg and kw args: %s' % k)
                 kw[k] = v
         if self._has_request_arg:
             kw['request'] = request
@@ -167,6 +167,8 @@ class RequestHandler(object):
                     return web.HTTPBadRequest('Misssing argument: %s' % name)
         logging.info('call with args: %s' % str(kw))
         try:
+            logging.info("RequestHandler(__call__:%s)" % self._func.__name__)
+            logging.info(kw)
             r = await self._func(**kw)
             return r
         except APIError as e:
@@ -183,7 +185,7 @@ def add_route(app, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
     if path is None or method is None:
-        raise ValueError('@get or @post note defined in %s.' % str(fn))
+        raise ValueError('@get or @post not defined in %s.' % str(fn))
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ','.join(inspect.signature(fn).parameters.keys())))

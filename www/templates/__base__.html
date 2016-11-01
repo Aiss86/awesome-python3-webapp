@@ -2,10 +2,15 @@
 <html>
 
 <head>
-    <meta charset="utf-8"> {% block meta %}
+    <meta charset="utf-8"/> 
+
+    {% block meta %}
     <!-- block meta -->
     {% endblock %}
-    <title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
+    
+    <title>
+        {% block title %} ? {% endblock %} - Awesome Python Webapp
+    </title>
     <link rel="stylesheet" type="text/css" href="/static/css/uikit.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/uikit.gradient.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/awesome.css" />
@@ -13,7 +18,9 @@
     <script type="text/javascript" src="/static/js/sha1.min.js"></script>
     <script type="text/javascript" src="/static/js/uikit.min.js"></script>
     <script type="text/javascript" src="/static/js/sticky.min.js"></script>
+	<script type="text/javascript" src="/static/js/vue.min.js"></script>
     <script type="text/javascript" src="/static/js/awesome.js"></script>
+
     {% block beforehead %}
     <!-- before head -->
     {% endblock %}
@@ -31,7 +38,7 @@
             <div class="uk-navbar-flip">
                 <ul class="uk-navbar-nav">
                     {% if __user__ %}
-                    <li class="uk-parent" data-ku-dropdown>
+                    <li class="uk-parent" data-uk-dropdown>
                         <a href="#0"><i class="uk-icon-user"></i>{{ __user__.name }}</a>
                         <div class="uk-dropdown uk-dropdown-navbar">
                             <ul class="uk-nav uk-nav-navbar">

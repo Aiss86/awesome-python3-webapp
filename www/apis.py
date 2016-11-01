@@ -5,7 +5,7 @@ __author__ = 'Aiss86'
 
 '''
 JSON API definition.
-''' 
+'''
 
 import json
 import logging
@@ -39,6 +39,7 @@ class APIResourceNotFoundError(APIError):
     Indicate the resource was not found. The data specifies the resource name.
 
     '''
+
     def __init__(self, field, message=''):
         super(APIResourceNotFoundError, self).__init__('value:notfound', field, message)
 
